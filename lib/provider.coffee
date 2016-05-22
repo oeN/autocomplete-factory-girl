@@ -7,9 +7,12 @@ module.exports =
 
   load: ->
     @loadCompletions()
-    for editor in atom.workspace.getTextEditors()
-      if editor.getPath().includes @factoryDirectory()
-        editor.onDidSave =>
+    @bindEvents()
+
+  bindEvents: ->
+    atom.workspace.observeTextEditors (editor) =>
+      editor.onDidSave (event) =>
+        if event.path.includes @factoryDirectory()
           @loadCompletions()
 
   getSuggestions: (request) ->
@@ -41,6 +44,7 @@ module.exports =
     rightLabel: 'FactoryGirl'
 
   loadCompletions: ->
+    console.log "loadCompletions"
     @allCompletions = @scanFactories()
 
 firstCharsEqual = (str1, str2) ->
