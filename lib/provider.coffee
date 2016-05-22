@@ -1,33 +1,39 @@
 fs = require 'fs'
 
 module.exports =
-  selector: '.source.ruby'
+  selector: '.source.ruby.rspec'
   disableForSelector: 'source.ruby .comment'
+  filterSuggestions: true
 
   load: () ->
-    @completions = @scanFactories()
+    @allCompletions = @scanFactories()
 
   getSuggestions: (request) ->
     {prefix} = request
     completions = []
-    for factory in @completions when not prefix or firstCharsEqual(factory, prefix)
+    for factory in @allCompletions when not prefix or firstCharsEqual(factory, prefix)
       completions.push(@buildCompletion(factory))
     completions
 
   scanFactories: () ->
-    results = []
-    factoryPattern = /factory :(\w+)/g
-    for factory_file in fs.readdirSync("#{@rootDirectory()}/spec/factories")
-      data = fs.readFileSync "#{@rootDirectory()}/spec/factories/#{factory_file}", 'utf8'
-      while (matches = factoryPattern.exec(data)) != null
-        results.push matches[1]
-    results
+    try
+      results = []
+      factoryPattern = /factory :(\w+)/g
+      for factory_file in fs.readdirSync("#{@rootDirectory()}#{@factoryDirectory()}")
+        data = fs.readFileSync "#{@rootDirectory()}#{@factoryDirectory()}/#{factory_file}", 'utf8'
+        while (matches = factoryPattern.exec(data)) != null
+          results.push matches[1]
+      results
+    catch e
 
   rootDirectory: ->
     atom.project.rootDirectories[0].path;
 
+  factoryDirectory: ->
+    "/spec/factories"
+
   buildCompletion: (factory) ->
-    text: ":#{factory}"
+    text: "#{factory}"
     rightLabel: 'FactoryGirl'
 
 firstCharsEqual = (str1, str2) ->
