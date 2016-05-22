@@ -5,8 +5,12 @@ module.exports =
   disableForSelector: 'source.ruby .comment'
   filterSuggestions: true
 
-  load: () ->
-    @allCompletions = @scanFactories()
+  load: ->
+    @loadCompletions()
+    for editor in atom.workspace.getTextEditors()
+      if editor.getPath().includes @factoryDirectory()
+        editor.onDidSave =>
+          @loadCompletions()
 
   getSuggestions: (request) ->
     {prefix} = request
@@ -35,6 +39,9 @@ module.exports =
   buildCompletion: (factory) ->
     text: "#{factory}"
     rightLabel: 'FactoryGirl'
+
+  loadCompletions: ->
+    @allCompletions = @scanFactories()
 
 firstCharsEqual = (str1, str2) ->
   str1[0].toLowerCase() is str2[0].toLowerCase()
