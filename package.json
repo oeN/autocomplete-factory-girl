@@ -1,10 +1,9 @@
 {
   "name": "autocomplete-factory-girl",
   "main": "./lib/main",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "An autocomplete+ provider for FactoryGirl factories",
-  "keywords": [
-  ],
+  "keywords": [],
   "repository": "https://github.com/oeN/autocomplete-factory-girl",
   "license": "MIT",
   "engines": {
@@ -17,6 +16,5 @@
       }
     }
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
