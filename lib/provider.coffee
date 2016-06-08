@@ -18,8 +18,9 @@ module.exports =
   getSuggestions: (request) ->
     {prefix} = request
     completions = []
-    for factory in @allCompletions when not prefix or firstCharsEqual(factory, prefix)
-      completions.push(@buildCompletion(factory))
+    if @allCompletions
+      for factory in @allCompletions when not prefix or firstCharsEqual(factory, prefix)
+        completions.push(@buildCompletion(factory))
     completions
 
   scanFactories: () ->
